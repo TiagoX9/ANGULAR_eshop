@@ -1,3 +1,6 @@
+import { UserService } from './user.service';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +9,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+  constructor(private userService: UserService, private auth: AuthService, router: Router) {
+    auth.user$.subscribe(user => { // anytime the user logs in this emits a new value
+      if (user) {
+        userService.save(user); // saves user when login
+
+        let returnUrl = localStorage.getItem('returnUrl');
+        router.navigateByUrl(returnUrl);
+      }
+    });
+  }
 }
